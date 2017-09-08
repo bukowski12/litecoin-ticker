@@ -1,0 +1,29 @@
+table.t {
+	overflow-x:hidden;
+	font-family: arial;
+	font-size: 13px;
+	border-width: 3px;
+	border-spacing: 0px;
+	border-style: outset;
+	border-color: gray;
+	border-collapse: separate;
+	background-color: #EFEEEE;
+	padding:3px;
+	width:200px;
+}
+span.r {
+	font-weight:bold;
+}
+td.val {
+	font-family:monospace;
+	padding:5px;
+	text-align:right;
+}
+tr.head {
+	background-color: #484848;
+	color: white;
+	height: 28px;
+}
+.hand {
+	cursor: pointer;
+}

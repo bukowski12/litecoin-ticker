@@ -1,0 +1,38 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="popup.js"></script>
+</head>
+<body>
+<table class="t">
+<tr class="head" id="prices">
+ <td align="center" style="padding:3px" colspan="5">
+ <b class="l">Current Bitstamp Prices</b>
+ </td>
+<tr height="2"><td>
+<tr bgcolor="#f0c0f0" >
+ <td style="padding:3px">Low:
+ <td class="val">$<span id="lowusd" class="r">...</span>
+ <td class="val">&euro;<span id="loweur" class="r">...</span>
+<tr bgcolor="#c0f0f0">
+ <td style="padding:3px">High:
+ <td class="val">$<span id="highusd" class="r">...</span>
+ <td class="val">&euro;<span id="higheur" class="r">...</span>
+<tr bgcolor="#efffef">
+ <td style="padding:3px">Bid:
+ <td class="val">$<span class="r" id="bidusd">...</span>
+ <td class="val">&euro;<span class="r" id="bideur">...</span>
+ <tr bgcolor="#ffefef">
+ <td style="padding:3px">Ask:
+ <td class="val">$<span class="r" id="askusd">...</span>
+ <td class="val">&euro;<span class="r" id="askeur">...</span>
+<tr bgcolor="#ffffef">
+ <td style="padding:3px">Last:
+ <td class="val">$<span id="lastusd" class="r hand">...</span>
+ <td class="val">&euro;<span class="r hand" id="lasteur">...</span>
+<tr bgcolor="#e0e0e0">
+ <td colspan="5" style="padding:3px" align="center">
+ Volume: <span class="r" id="vol">...</span>
+</table>
+</body>
+</html>
