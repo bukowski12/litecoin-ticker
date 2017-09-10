@@ -37,7 +37,7 @@ function get_usd() {
 	req.open("GET", "https://www.bitstamp.net/api/v2/ticker/ltcusd")
 	req.onerror = function() {
 		chrome.browserAction.setBadgeText({text: "?"})
-		setTimeout(getnr, 10e3)
+		setTimeout(get_usd, 10e3)
 	}
 	req.onload = function() {
 		try {
@@ -57,7 +57,7 @@ function get_eur() {
 	req.open("GET", "https://www.bitstamp.net/api/v2/ticker/ltceur")
 	req.onerror = function() {
 		chrome.browserAction.setBadgeText({text: "?"})
-		setTimeout(getnr, 10e3)
+		setTimeout(get_eur, 10e3)
 	}
 	req.onload = function() {
 		try {
