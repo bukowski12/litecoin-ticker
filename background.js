@@ -1,80 +1,71 @@
-const defr = 10
-const defg = 110
-const defb = 50
+const defr = 10;
+const defg = 110;
+const defb = 50;
 
-var r = defr
-var g = defg
-var b = defg
-var ticker = null
-var tickereur = null
-var popupRefresh = null
-var showCUR = localStorage.showCUR || "USD";
+let ticker = null;
+let tickereur = null;
+let showCUR = "USD";
 
-function refresh_popup() {
-	if (popupRefresh != null) {
-		try {
-			popupRefresh()
-		} catch (e) {
-			popupRefresh=null
-		}
-	}
+// Initialize settings from storage
+chrome.storage.local.get(["showCUR"], (result) => {
+    if (result.showCUR) {
+        showCUR = result.showCUR;
+    }
+});
+
+function updateBadge() {
+    const data = showCUR === "EUR" ? tickereur : ticker;
+    const title = showCUR === "EUR" ? "EUR" : "USD";
+
+    if (data && data.last) {
+        chrome.action.setBadgeText({ text: parseFloat(data.last).toFixed(2) });
+        chrome.action.setTitle({ title: title });
+    } else {
+        chrome.action.setBadgeText({ text: "..." });
+    }
 }
 
-function refresh() {
-	if (showCUR=="EUR" && tickereur!=null) {
-			chrome.browserAction.setBadgeText({text: ((parseFloat(tickereur.last))).toFixed(2)});
-			chrome.browserAction.setTitle({title: "EUR"});
-		} else {
-			chrome.browserAction.setBadgeText({text: parseFloat(ticker.last).toFixed(2)});
-			chrome.browserAction.setTitle({title: "USD"});
-		}
-		refresh_popup()
+async function get_usd() {
+    try {
+        const response = await fetch("https://www.bitstamp.net/api/v2/ticker/ltcusd");
+        if (!response.ok) throw new Error("Network response was not ok");
+        ticker = await response.json();
+        chrome.storage.local.set({ ticker: ticker });
+        updateBadge();
+    } catch (error) {
+        console.error("Error fetching USD price:", error);
+        chrome.action.setBadgeText({ text: "?" });
+    }
+    setTimeout(get_usd, 30e3);
 }
 
-
-function get_usd() {
-	var req = new XMLHttpRequest()
-	req.open("GET", "https://www.bitstamp.net/api/v2/ticker/ltcusd")
-	req.onerror = function() {
-		chrome.browserAction.setBadgeText({text: "?"})
-		setTimeout(get_usd, 10e3)
-	}
-	req.onload = function() {
-		try {
-			ticker = JSON.parse(req.responseText)
-			//console.log(ticker)
-			refresh()
-		} catch (e) {
-			chrome.browserAction.setBadgeText({text: "..."})
-		}
-		setTimeout(get_usd, 30e3)
-	}
-	req.send(null)
-}
-
-function get_eur() {
-	var req = new XMLHttpRequest()
-	req.open("GET", "https://www.bitstamp.net/api/v2/ticker/ltceur")
-	req.onerror = function() {
-		chrome.browserAction.setBadgeText({text: "?"})
-		setTimeout(get_eur, 10e3)
-	}
-	req.onload = function() {
-		try {
-			tickereur = JSON.parse(req.responseText)
-			//console.log(ticker)
-			refresh()
-		} catch (e) {
-			chrome.browserAction.setBadgeText({text: "..."})
-		}
-		setTimeout(get_eur, 30e3)
-	}
-	req.send(null)
+async function get_eur() {
+    try {
+        const response = await fetch("https://www.bitstamp.net/api/v2/ticker/ltceur");
+        if (!response.ok) throw new Error("Network response was not ok");
+        tickereur = await response.json();
+        chrome.storage.local.set({ tickereur: tickereur });
+        updateBadge();
+    } catch (error) {
+        console.error("Error fetching EUR price:", error);
+        chrome.action.setBadgeText({ text: "?" });
+    }
+    setTimeout(get_eur, 30e3);
 }
 
 function setcol() {
-	chrome.browserAction.setBadgeBackgroundColor({color:[r, g, b, 255]});
+    chrome.action.setBadgeBackgroundColor({ color: [defr, defg, defb, 255] });
 }
-setcol()
-get_eur()
-get_usd()
+
+// Listen for storage changes (e.g., from popup)
+chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "local" && changes.showCUR) {
+        showCUR = changes.showCUR.newValue;
+        updateBadge();
+    }
+});
+
+// Initialization
+setcol();
+get_eur();
+get_usd();
